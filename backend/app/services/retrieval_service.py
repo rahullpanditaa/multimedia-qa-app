@@ -14,7 +14,8 @@ from sqlalchemy.orm import Session
 from app.services.embedding_service import generate_embedding
 
 
-def retrieve_similar_chunks(query: str, db: Session, 
+def retrieve_similar_chunks(query: str, document_id: int,
+                            db: Session, 
                             limit: int = 5):
     """
     Retrieve chunks semantically similar to user query.
@@ -25,7 +26,7 @@ def retrieve_similar_chunks(query: str, db: Session,
 
     # Vector similarity search
     results = (
-        db.query(Chunk)
+        db.query(Chunk).filter(Chunk.document_id == document_id)
         .order_by(
             Chunk.embedding.cosine_distance(
                 query_embedding

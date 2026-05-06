@@ -1,12 +1,12 @@
 # Handles chunking of text
-def chunk_text(text: str, chunk_size: int = 700, 
+def chunk_text(text: str, chunk_size: int = 500, 
                overlap: int = 100) -> list[str]:
     """
     Splits text into overlapping chunks. Overlap helps preserve continuity.
 
     Example:
-    chunk 1 = chars 0-700
-    chunk 2 = chars 600-1300    
+    chunk 1 = chars 0-500
+    chunk 2 = chars 400-900    
 
     Args:
         text: The full extracted document text

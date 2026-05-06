@@ -29,6 +29,9 @@ class ChatRequest(BaseModel):
 
     question: str
 
+    # Document to search against
+    document_id: int
+
 
 @router.post("/")
 def chat(payload: ChatRequest, db: Session = Depends(get_db)):
@@ -39,6 +42,7 @@ def chat(payload: ChatRequest, db: Session = Depends(get_db)):
     # Retrieve relevant chunks
     retrieved_chunks = retrieve_similar_chunks(
         query=payload.question,
+        document_id=payload.document_id,
         db=db,
         limit=5,
     )
@@ -69,7 +73,7 @@ Answer:
 
     # Generate llm response
     answer = generate_response(prompt)
-    
+
     return {
         "question": payload.question,
         "answer": answer,
