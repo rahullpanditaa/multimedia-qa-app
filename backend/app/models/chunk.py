@@ -3,6 +3,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
+from pgvector.sqlalchemy import Vector
+
 
 # Model for storing individual chunks of extracted document text
 # Docs -> chunks -> vectors
@@ -17,6 +19,9 @@ class Chunk(Base):
 
     # position/order of the chunk inside the document
     chunk_index: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    # Semanic embedding vector (model outputs ~768 dimensional vectors (i think))
+    embedding: Mapped[list[float]] = mapped_column(Vector(768), nullable=True)
 
     # foreign key chunk -> parent document
     document_id: Mapped[int] = mapped_column(
