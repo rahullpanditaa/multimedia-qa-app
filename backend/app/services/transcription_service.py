@@ -7,7 +7,7 @@ from faster_whisper import WhisperModel
 
 # Load Whisper model
 model = WhisperModel(
-    "tiny",
+    "base",
     compute_type="int8",
 )
 
