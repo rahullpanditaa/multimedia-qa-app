@@ -25,6 +25,8 @@ from app.models.chunk import Chunk
 from app.services.embedding_service import generate_embedding
 from app.services.chunking_service import chunk_text
 
+from app.services.transcript_window_service import create_transcript_windows
+
 # API route for all /media path operations
 router = APIRouter(prefix="/media", tags=["media"])
 
@@ -58,6 +60,9 @@ def upload_media(file: UploadFile = File(...),
 
     segments = transcribe_media(filepath)
 
+    # Create transcript windows
+    windows = create_transcript_windows(segments=segments)
+
     # Build transcript text
     # Join all segments into one text block
     transcript_text = " ".join([segment["text"] for segment in segments])
@@ -78,20 +83,15 @@ def upload_media(file: UploadFile = File(...),
         )
         db.add(segment_row)
     
-    # generate embeddings for transcript chunks
-    for index, chunk in enumerate(chunks):
+    # store window embeddings
+    for index, window in enumerate(windows):
+        embedding = generate_embedding(window["text"])
 
-        # Generate semantic embedding
-        embedding = generate_embedding(chunk)
-
-        # Store searchable chunk
         chunk_row = Chunk(
-            text=chunk,
+            text=window["text"],
             chunk_index=index,
             document_id=document.id,
-            embedding=embedding,
-        )
-
+            embedding=embedding)
         db.add(chunk_row)
 
     db.commit()
