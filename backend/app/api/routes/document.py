@@ -21,8 +21,6 @@ def create_document(payload: DocumentCreate, db: Session = Depends(get_db)):
 def get_documents(db: Session = Depends(get_db)):
     """
     Return all uploaded documents.
-
-    Ordered newest first for better UX.
     """
 
     documents = (
@@ -33,11 +31,4 @@ def get_documents(db: Session = Depends(get_db)):
         .all()
     )
 
-    # return documents
-    return [{
-        "id": document.id, 
-        "filename": document.filename,
-        "file_type": document.file_type
-    }
-    for document in documents
-    ]
+    return documents
