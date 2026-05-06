@@ -67,10 +67,13 @@ def upload_media(file: UploadFile = File(...),
 
     # Store transcript segments
     for segment in segments:
+        embedding = generate_embedding(segment["text"])
+
         segment_row = TranscriptSegment(
             text=segment["text"],
             start_time=segment["start"],
             end_time=segment["end"],
+            embedding=embedding,
             document_id=document.id,
         )
         db.add(segment_row)

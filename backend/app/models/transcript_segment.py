@@ -12,6 +12,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
+from pgvector.sqlalchemy import Vector
+
 class TranscriptSegment(Base):
     __tablename__ = "transcript_segments"
 
@@ -37,6 +39,9 @@ class TranscriptSegment(Base):
         Float,
         nullable=False,
     )
+    
+    # Semantic embedding for transcript segment
+    embedding: Mapped[list[float]] = mapped_column(Vector(768), nullable=True)
 
     # Parent document
     document_id: Mapped[int] = mapped_column(
