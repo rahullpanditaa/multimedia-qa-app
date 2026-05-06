@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import api from "../api/client";
 
+import DocumentSelector from "./DocumentSelector";
+
 
 function ChatBox() {
 
@@ -11,7 +13,7 @@ function ChatBox() {
     useState("");
 
   // Selected document ID
-  const [documentId, setDocumentId] =
+  const [selectedDocumentId, setSelectedDocumentId] =
     useState("");
 
   // Generated answer from backend
@@ -26,7 +28,7 @@ function ChatBox() {
   // Send question to backend
   async function askQuestion() {
 
-    if (!question || !documentId) {
+    if (!question || !selectedDocumentId) {
 
       alert(
         "Question and document ID are required."
@@ -49,9 +51,7 @@ function ChatBox() {
           question: question,
 
           // Convert string input -> int
-          document_id: Number(
-            documentId
-          ),
+          document_id: Number(selectedDocumentId)
         }
       );
 
@@ -82,15 +82,13 @@ function ChatBox() {
 
       <h2>Chat</h2>
 
-      {/* Document selector */}
-      <input
-        type="number"
-        placeholder="Document ID"
-        value={documentId}
-        onChange={(event) =>
-          setDocumentId(
-            event.target.value
-          )
+      <DocumentSelector
+        selectedDocumentId={
+          selectedDocumentId
+        }
+      
+        setSelectedDocumentId={
+          setSelectedDocumentId
         }
       />
 
