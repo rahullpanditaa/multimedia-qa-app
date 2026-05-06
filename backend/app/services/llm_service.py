@@ -16,7 +16,7 @@ import requests
 # Ollama chat endpoint
 OLLAMA_CHAT_URL = "http://localhost:11434/api/generate"
 
-LLM_MODEL = "llama3"
+LLM_MODEL = "mistral:latest"
 
 
 def generate_response(prompt: str) -> str:

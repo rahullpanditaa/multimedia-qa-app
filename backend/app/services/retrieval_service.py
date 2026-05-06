@@ -1,5 +1,5 @@
 """
-This service performs semantic retrieval.
+This service performs semantic retrieval using pgvector and SQLAlchemy ORM.
 
 Flow:
 1. embed user query
@@ -7,7 +7,8 @@ Flow:
 3. return most semantically similar chunks
 """
 
-from sqlalchemy import text
+# from sqlalchemy import text
+from app.models.chunk import Chunk
 from sqlalchemy.orm import Session
 
 from app.services.embedding_service import generate_embedding
@@ -22,24 +23,16 @@ def retrieve_similar_chunks(query: str, db: Session,
     # Generate embedding for user query
     query_embedding = generate_embedding(query)
 
-    # pgvector cosine similarity search
-    # <=> -> cosine distance operator
-    # Smaller distance = more similar
-    sql = text(
-        '''
-        SELECT *
-        FROM chunks
-        ORDER BY embedding <=> :embedding
-        LIMIT :limit
-        '''
+    # Vector similarity search
+    results = (
+        db.query(Chunk)
+        .order_by(
+            Chunk.embedding.cosine_distance(
+                query_embedding
+            )
+        )
+        .limit(limit)
+        .all()
     )
 
-    results = db.execute(
-        sql,
-        {
-            "embedding": query_embedding,
-            "limit": limit,
-        },
-    )
-
-    return results.fetchall()
+    return results
