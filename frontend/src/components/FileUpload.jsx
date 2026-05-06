@@ -5,6 +5,8 @@ import api from "../api/client";
 
 function FileUpload() {
 
+  console.log("COMPONENT RENDER")
+
   // Component state
 
   // Stores currently selected file.
@@ -53,6 +55,9 @@ function FileUpload() {
   // handle file upload
   async function handleUpload() {
 
+    // debug logging (upload happening in backend - ui shows failed)
+    console.log("HANDLE UPLOAD RUNNING NOW")
+
     // Basic validation.
     if (!selectedFile) {
       alert("Please select a file.");
@@ -96,9 +101,10 @@ function FileUpload() {
         }
       );
 
-
+      // debugging
+      console.log("Upload response:", response.data)
       // success message
-      setMessage(response.data.message);
+      setMessage(response.data.message || "Upload successful.");
 
     } catch (error) {
 
@@ -128,7 +134,7 @@ function FileUpload() {
       />
 
       {/* Upload button */}
-      <button
+      <button type="button"
         onClick={handleUpload}
       >
         Upload
