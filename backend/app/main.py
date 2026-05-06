@@ -1,5 +1,6 @@
 from app.api.routes.document import router as document_router
 from app.api.routes.upload import router as upload_router
+from app.api.routes.chat import router as chat_router
 
 from fastapi import FastAPI
 
@@ -11,3 +12,4 @@ def health_check():
 
 app.include_router(document_router)
 app.include_router(upload_router)
+app.include_router(chat_router)
