@@ -33,6 +33,7 @@ coverage.xml
 # OS files
 .DS_Store
 Thumbs.db
+backend/fastapihelp.py
 
 # Logs
 *.log
