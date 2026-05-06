@@ -25,7 +25,7 @@ class Document(Base):
         nullable=False,
         default="pdf"
     )
-    
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow,
@@ -34,6 +34,12 @@ class Document(Base):
     # Relationship - one doc can have many chunks
     chunks = relationship(
         "Chunk",
+        back_populates="document",
+        cascade="all, delete-orphan",
+    )
+
+    transcript_segments = relationship(
+        "TranscriptSegment",
         back_populates="document",
         cascade="all, delete-orphan",
     )
