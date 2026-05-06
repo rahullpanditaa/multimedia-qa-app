@@ -1,0 +1,63 @@
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# Environment variables
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest
+.pytest_cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# Type checking
+.mypy_cache/
+
+# Ruff / lint caches
+.ruff_cache/
+
+# IDEs/editors
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Docker
+*.pid
+
+# Database files
+*.sqlite3
+
+# Uploads/media
+uploads/
+media/
+
+# Build artifacts
+dist/
+build/
+
+# Alembic cache
+alembic/__pycache__/
+
+# Node modules (later, frontend)
+node_modules/
+
+# Misc
+*.swp
+
+snippets.py
