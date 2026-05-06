@@ -26,6 +26,7 @@ from app.models.chunk import Chunk
 from app.services.pdf_service import extract_text_from_pdf
 from app.services.chunking_service import chunk_text
 
+from app.services.embedding_service import generate_embedding
 
 # FastAPI router
 router = APIRouter(prefix="/upload", tags=["upload"],)
@@ -84,10 +85,16 @@ def upload_pdf(file: UploadFile = File(...), db: Session = Depends(get_db)):
     # Store chunks in db
     for index, chunk in enumerate(chunks):
 
+        # generate semantic embedding vector
+        embedding = generate_embedding(chunk)
+
         chunk_row = Chunk(
             text=chunk,
             chunk_index=index,
             document_id=document.id,
+
+            # store embedding vector
+            embedding=embedding
         )
 
         db.add(chunk_row)
