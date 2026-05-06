@@ -19,4 +19,25 @@ def create_document(payload: DocumentCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=list[DocumentResponse])
 def get_documents(db: Session = Depends(get_db)):
-    return db.query(Document).all()
+    """
+    Return all uploaded documents.
+
+    Ordered newest first for better UX.
+    """
+
+    documents = (
+        db.query(Document)
+
+        .order_by(Document.id.desc())
+
+        .all()
+    )
+
+    # return documents
+    return [{
+        "id": document.id, 
+        "filename": document.filename,
+        "file_type": document.file_type
+    }
+    for document in documents
+    ]
