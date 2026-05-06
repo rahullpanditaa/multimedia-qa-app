@@ -19,6 +19,13 @@ class Document(Base):
     # eg - application/pdf
     mime_type: Mapped[str] = mapped_column(String, nullable=False)
 
+    # Type of uploaded file, eg pdf, audio, video
+    file_type: Mapped[str] = mapped_column(
+        String,
+        nullable=False,
+        default="pdf"
+    )
+    
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow,
