@@ -1,0 +1,92 @@
+name: Backend CI
+
+
+# When workflow runs
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+# jobs
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+
+    # postgres service container
+    services:
+
+      postgres:
+        image: pgvector/pgvector:pg16
+
+        env:
+
+          POSTGRES_DB: qa_rag_test
+
+          POSTGRES_USER: postgres
+
+          POSTGRES_PASSWORD: postgres
+
+        ports:
+          - 5432:5432
+
+        options: >-
+
+          --health-cmd="pg_isready -U postgres"
+
+          --health-interval=10s
+
+          --health-timeout=5s
+
+          --health-retries=5
+
+    env:
+
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qa_rag_test
+
+
+    steps:
+      - name: Checkout repository
+
+        uses: actions/checkout@v4
+      - name: Setup Python
+
+        uses: actions/setup-python@v5
+
+        with:
+
+          python-version: "3.12"
+
+      - name: Install dependencies
+
+        working-directory: backend
+
+        run: |
+
+          python -m pip install --upgrade pip
+
+          pip install -r requirements.txt
+
+      - name: Enable pgvector extension
+
+        run: |
+
+          PGPASSWORD=postgres psql \
+            -h localhost \
+            -U postgres \
+            -d qa_rag_test \
+            -c "CREATE EXTENSION IF NOT EXISTS vector;"
+
+
+      - name: Run tests
+
+        working-directory: backend
+
+        run: |
+
+          pytest --cov=app
