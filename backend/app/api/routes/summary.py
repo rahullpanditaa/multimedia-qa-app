@@ -18,12 +18,15 @@ from app.models.chunk import Chunk
 
 from app.services.llm_service import generate_response
 
+from app.services.auth_dependency import get_current_user
+
 # api router for /summary path operations
 router = APIRouter(prefix="/summary", tags=["summary"])
 
 # path parameter - doc id
 @router.post("/{document_id}")
-def summarize_document(document_id: int, db: Session = Depends(get_db)):
+def summarize_document(document_id: int, db: Session = Depends(get_db),
+                       current_user = Depends(get_current_user)):
     """
     Generate summary for a document.
     """

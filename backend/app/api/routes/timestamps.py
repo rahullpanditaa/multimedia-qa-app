@@ -10,6 +10,8 @@ from app.db.session import get_db
 
 from app.services.timestamp_service import retrieve_relevant_timestamps
 
+from app.services.auth_dependency import get_current_user
+
 # API router for /timestamps path operations
 router = APIRouter(prefix="/timestamps", tags=["timestamps"])
 
@@ -20,7 +22,8 @@ class TimestampRequest(BaseModel):
 
 @router.post("/")
 def get_timestamps(payload: TimestampRequest,
-                   db: Session = Depends(get_db)):
+                   db: Session = Depends(get_db),
+                   current_user = Depends(get_current_user)):
 
     results = retrieve_relevant_timestamps(
         query=payload.question,

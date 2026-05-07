@@ -27,6 +27,7 @@ from app.services.pdf_service import extract_text_from_pdf
 from app.services.chunking_service import chunk_text
 
 from app.services.embedding_service import generate_embedding
+from app.services.auth_dependency import get_current_user
 
 # FastAPI router
 router = APIRouter(prefix="/upload", tags=["upload"],)
@@ -36,7 +37,8 @@ UPLOAD_DIRECTORY = "uploads"
 
 
 @router.post("/pdf")
-def upload_pdf(file: UploadFile = File(...), db: Session = Depends(get_db)):
+def upload_pdf(file: UploadFile = File(...), db: Session = Depends(get_db),
+               current_user = Depends(get_current_user)):
     """
     Upload and process a PDF.
     """

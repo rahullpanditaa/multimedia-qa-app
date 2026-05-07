@@ -26,6 +26,7 @@ from app.services.embedding_service import generate_embedding
 from app.services.chunking_service import chunk_text
 
 from app.services.transcript_window_service import create_transcript_windows
+from app.services.auth_dependency import get_current_user
 
 # API route for all /media path operations
 router = APIRouter(prefix="/media", tags=["media"])
@@ -34,7 +35,8 @@ UPLOAD_DIRECTORY = "uploads"
 
 @router.post("/upload")
 def upload_media(file: UploadFile = File(...), 
-                 db: Session = Depends(get_db)):
+                 db: Session = Depends(get_db),
+                 current_user = Depends(get_current_user)):
 
     # Save file
     unique_filename = f"{uuid4()}_{file.filename}"

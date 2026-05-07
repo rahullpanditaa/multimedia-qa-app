@@ -25,6 +25,8 @@ from fastapi.responses import StreamingResponse
 import requests
 import json
 
+from app.services.auth_dependency import get_current_user
+
 # /chat path operations
 router = APIRouter(prefix="/chat", tags=["chat"])
 
@@ -41,7 +43,8 @@ class ChatRequest(BaseModel):
 
 
 @router.post("/")
-def chat(payload: ChatRequest, db: Session = Depends(get_db)):
+def chat(payload: ChatRequest, db: Session = Depends(get_db),
+         current_user = Depends(get_current_user)):
     """
     Main RAG chat endpoint.
     """
@@ -150,11 +153,8 @@ Question:
         )
 
         for line in response.iter_lines():
-
             if line:
-
                 data = json.loads(line)
-
                 token = data.get(
                     "response",
                     "",
@@ -165,6 +165,5 @@ Question:
 
     return StreamingResponse(
         generate(),
-
         media_type="text/plain",
     )
