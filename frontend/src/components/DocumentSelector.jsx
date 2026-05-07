@@ -4,8 +4,8 @@ import api from "../api/client";
 
 
 function DocumentSelector({
-  selectedDocumentId,
-  setSelectedDocumentId,
+  selectedDocument,
+  setSelectedDocument,
 }) {
 
   // Uploaded documents from backend
@@ -47,13 +47,17 @@ function DocumentSelector({
       <h3>Select Document</h3>
 
       <select
-        value={selectedDocumentId}
+        value={selectedDocument?.id || ""}
 
-        onChange={(event) =>
-          setSelectedDocumentId(
-            event.target.value
-          )
-        }
+        onChange={(event) => {
+          const selectedId = Number(event.target.value);
+
+          // Find matching doc object
+          const document = documents.find((doc) => doc.id === selectedId);
+        setSelectedDocument(
+          document
+        );
+        }}
       >
 
         <option value="">

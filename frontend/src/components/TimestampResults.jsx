@@ -2,17 +2,16 @@ import { useState } from "react";
 
 import api from "../api/client";
 
-import DocumentSelector
-from "./DocumentSelector";
-
+import DocumentSelector from "./DocumentSelector";
+import MediaPlayer from "./MediaPlayer";
 
 function TimestampResults() {
 
   // Selected media doc
   const [
-    selectedDocumentId,
-    setSelectedDocumentId,
-  ] = useState("");
+    selectedDocument,
+    setSelectedDocument,
+  ] = useState(null);
 
   // User query
   const [question, setQuestion] =
@@ -25,6 +24,10 @@ function TimestampResults() {
   // Loading state
   const [isLoading, setIsLoading] =
     useState(false);
+
+  // player state
+  const [mediaUrl, setMediaUrl] = useState("");
+  const [startTime, setStartTime] = useState(0);
 
   // Format timestamps - eg 125 secs to 02:05
   function formatTimestamp(seconds) {
@@ -49,9 +52,7 @@ function TimestampResults() {
 
   async function fetchTimestamps() {
     if (
-      !selectedDocumentId ||
-      !question
-    ) {
+      !selectedDocument || !question) {
 
       alert(
         "Please select a document and ask a question."
@@ -73,7 +74,7 @@ function TimestampResults() {
             question,
 
             document_id: Number(
-              selectedDocumentId
+              selectedDocument.id
             ),
           }
         );
@@ -101,12 +102,12 @@ function TimestampResults() {
 
       {/* Select media document */}
       <DocumentSelector
-        selectedDocumentId={
-          selectedDocumentId
+        selectedDocument={
+          selectedDocument
         }
 
-        setSelectedDocumentId={
-          setSelectedDocumentId
+        setSelectedDocument={
+          setSelectedDocument
         }
       />
 
@@ -182,11 +183,26 @@ function TimestampResults() {
                   {timestamp.text}
                 </p>
 
+                {/* playback button */}
+                <button type="button" 
+                onClick={() => {
+                    setMediaUrl(
+                        "http://127.0.0.1:8000/" + selectedDocument.filepath
+                    );
+
+                    setStartTime(timestamp.start_time);
+                }}
+                >Play From Timestamp</button>
+
               </div>
             )
           )}
 
         </div>
+      )}
+
+      {mediaUrl && (
+        <MediaPlayer mediaUrl={mediaUrl} startTime={startTime}/>
       )}
 
     </div>

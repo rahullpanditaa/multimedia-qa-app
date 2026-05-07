@@ -10,10 +10,10 @@ function MediaPlayer({
 
     const player = event.target;
 
-    // Jump to timestamp.
+    // Jump to timestamp
     player.currentTime = startTime;
 
-    // Start playback automatically.
+    // Start playback automatically
     player.play();
   }
 
