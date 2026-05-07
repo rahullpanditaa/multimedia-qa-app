@@ -10,9 +10,9 @@ function SummaryPanel() {
 
   // Selected document
   const [
-    selectedDocumentId,
-    setSelectedDocumentId,
-  ] = useState("");
+    selectedDocument,
+    setSelectedDocument,
+  ] = useState(null);
 
   // Generated summary
   const [summary, setSummary] =
@@ -24,7 +24,7 @@ function SummaryPanel() {
 
   // generate summary
   async function generateSummary() {
-    if (!selectedDocumentId) {
+    if (!selectedDocument) {
 
       alert(
         "Please select a document."
@@ -41,7 +41,7 @@ function SummaryPanel() {
     try {
       const response =
         await api.post(
-          `/summary/${selectedDocumentId}`
+          `/summary/${selectedDocument.id}`
         );
 
       // Store generated summary
@@ -71,12 +71,12 @@ function SummaryPanel() {
 
       {/* Document selector */}
       <DocumentSelector
-        selectedDocumentId={
-          selectedDocumentId
+        selectedDocument={
+          selectedDocument
         }
 
-        setSelectedDocumentId={
-          setSelectedDocumentId
+        setSelectedDocument={
+          setSelectedDocument
         }
       />
 

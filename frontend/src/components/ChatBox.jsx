@@ -13,8 +13,7 @@ function ChatBox() {
     useState("");
 
   // Selected document ID
-  const [selectedDocumentId, setSelectedDocumentId] =
-    useState("");
+  const [selectedDocument, setSelectedDocument] = useState(null);
 
   // Generated answer from backend
   const [answer, setAnswer] =
@@ -28,7 +27,7 @@ function ChatBox() {
   // Send question to backend
   async function askQuestion() {
 
-    if (!question || !selectedDocumentId) {
+    if (!question || !selectedDocument) {
 
       alert(
         "Question and document ID are required."
@@ -51,7 +50,7 @@ function ChatBox() {
           question: question,
 
           // Convert string input -> int
-          document_id: Number(selectedDocumentId)
+          document_id: Number(selectedDocument.id)
         }
       );
 
@@ -83,12 +82,12 @@ function ChatBox() {
       <h2>Chat</h2>
 
       <DocumentSelector
-        selectedDocumentId={
-          selectedDocumentId
+        selectedDocument={
+          selectedDocument
         }
       
-        setSelectedDocumentId={
-          setSelectedDocumentId
+        setSelectedDocument={
+          setSelectedDocument
         }
       />
 
