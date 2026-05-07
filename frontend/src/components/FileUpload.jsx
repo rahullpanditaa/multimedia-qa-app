@@ -65,7 +65,8 @@ function FileUpload() {
     }
 
     // Determine backend route.
-    const endpoint = getUploadEndpoint(selectedFile);
+    // const endpoint = getUploadEndpoint(selectedFile);
+    const endpoint = selectedFile.type == "application/pdf" ? "/upload/pdf" : "/media/upload";
 
     // Reject unsupported file types.
     if (!endpoint) {
