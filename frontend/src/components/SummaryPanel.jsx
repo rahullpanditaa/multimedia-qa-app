@@ -84,8 +84,9 @@ function SummaryPanel() {
       <button
         type="button"
         onClick={generateSummary}
+        disabled={isLoading || !selectedDocument}
       >
-        Generate Summary
+        {isLoading ? "Generating..." : "Generate Summary"}
       </button>
 
       {/* Loading state */}
@@ -93,6 +94,11 @@ function SummaryPanel() {
         <p>Generating summary...</p>
       )}
 
+      {!isLoading && !summary && (
+        <p>
+          No summary generated yet.
+        </p>
+      )}
       {/* Render summary */}
       {summary && (
 

@@ -89,6 +89,18 @@ function FileUpload() {
         selectedFile
       );
 
+      if (!selectedFile) {
+        setMessage("Please select a file.");
+        return;
+      }
+
+      // max 50 mb (necessary?)
+      const MAX_SIZE = 50 * 1024 * 1024;
+      if (selectedFile.size > MAX_SIZE) {
+        setMessage("File exceeds 50 MB limit.");
+        return;
+      }
+
 
       // Send upload request
       const response = await api.post(
@@ -137,8 +149,9 @@ function FileUpload() {
       {/* Upload button */}
       <button type="button"
         onClick={handleUpload}
+        disabled={isUploading || !selectedFile}
       >
-        Upload
+        {isUploading ? "Uploading..." : "Upload"}
       </button>
 
       {/* Loading state */}

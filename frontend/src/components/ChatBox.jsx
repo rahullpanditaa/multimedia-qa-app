@@ -92,9 +92,12 @@ function ChatBox() {
 
       console.error(error);
 
-      setAnswer(
-        "Failed to generate answer."
-      );
+      if (error.response) {
+        setAnswer(error.response.data.detail || "Backend request failed.");
+      } else {
+        setAnswer("Network error.");
+      }
+
 
     } finally {
 
@@ -133,8 +136,9 @@ function ChatBox() {
       {/* Submit button */}
       <button
         onClick={askQuestion}
+        disabled={isLoading}
       >
-        Ask
+        {isLoading ? "Generating..." : "Ask"}
       </button>
 
       {/* Loading state */}

@@ -126,8 +126,9 @@ function TimestampResults() {
       <button
         type="button"
         onClick={fetchTimestamps}
+        disabled={isLoading || !selectedDocument || !question}
       >
-        Find Timestamps
+        {isLoading ? "Searching..." : "Find Timestamps"}
       </button>
 
       {/* Loading state */}
@@ -192,6 +193,11 @@ function TimestampResults() {
           )}
 
         </div>
+      )}
+      {!isLoading && timestamps.length == 0 && (
+        <p>
+          No timestamps found.
+        </p>
       )}
 
       {mediaUrl && (
