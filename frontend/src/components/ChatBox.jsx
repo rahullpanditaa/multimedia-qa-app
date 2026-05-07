@@ -23,12 +23,9 @@ function ChatBox() {
   const [isLoading, setIsLoading] =
     useState(false);
 
-
   // Send question to backend
   async function askQuestion() {
-
     if (!question || !selectedDocument) {
-
       alert(
         "Question and document ID are required."
       );
@@ -42,23 +39,54 @@ function ChatBox() {
     setAnswer("");
 
     try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/chat/stream",
 
-      // send chat request
-      const response = await api.post(
-        "/chat/",
-        {
-          question: question,
+      {
+    method: "POST",
+    headers: {
+      "Content-Type":
+        "application/json",
+    },
 
-          // Convert string input -> int
-          document_id: Number(selectedDocument.id)
-        }
-      );
+    body: JSON.stringify({
+      question,
+      document_id:
+        selectedDocument.id,
+    }),
+    }
+  );
 
 
-      // Store response
-      setAnswer(
-        response.data.answer
-      );
+  const reader = response.body.getReader();
+
+  const decoder = new TextDecoder();
+
+
+  // Clear previous answer
+  setAnswer("");
+
+  // Read streamed chunks continuously
+  while (true) {
+    const {
+      done,
+      value,
+    } = await reader.read();
+
+    // Stream finished
+    if (done) {
+      break;
+    }
+
+  // Decode bytes -> text
+  const chunk =
+    decoder.decode(value);
+
+  // Append streamed text
+  setAnswer((prev) =>
+    prev + chunk
+  );
+}
 
     } catch (error) {
 

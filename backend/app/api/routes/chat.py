@@ -20,6 +20,11 @@ from app.services.llm_service import generate_response
 
 from app.models.document import Document
 
+from fastapi.responses import StreamingResponse
+
+import requests
+import json
+
 # /chat path operations
 router = APIRouter(prefix="/chat", tags=["chat"])
 
@@ -88,3 +93,78 @@ Answer:
         "question": payload.question,
         "answer": answer,
     }
+
+# streaming chat edpoint
+@router.post("/stream")
+def stream_chat(payload: ChatRequest, db: Session = Depends(get_db)):
+    document = (
+        db.query(Document)
+        .filter(Document.id == payload.document_id).first())
+    if not document:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found.",
+        )
+
+    chunks = retrieve_similar_chunks(
+        query=payload.question,
+        document_id=payload.document_id,
+        db=db,
+    )
+
+    context = "\n\n".join(
+        chunk.text
+        for chunk in chunks
+    )
+
+    prompt = f"""
+Answer the user's question
+using ONLY the provided context.
+
+Context:
+{context}
+
+Question:
+{payload.question}
+"""
+
+    def generate():
+
+        response = requests.post(
+
+            "http://localhost:11434/api/generate",
+
+            json={
+
+                "model":
+                    "mistral:latest",
+
+                "prompt":
+                    prompt,
+
+                "stream":
+                    True,
+            },
+
+            stream=True,
+        )
+
+        for line in response.iter_lines():
+
+            if line:
+
+                data = json.loads(line)
+
+                token = data.get(
+                    "response",
+                    "",
+                )
+
+                yield token
+
+
+    return StreamingResponse(
+        generate(),
+
+        media_type="text/plain",
+    )
