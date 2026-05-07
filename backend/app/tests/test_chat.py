@@ -4,8 +4,7 @@ Tests for chat endpoint.
 
 from app.tests.conftest import client
 
-def test_chat_missing_document():
-
+def test_chat_missing_document(client):
     response = client.post(
         "/chat/",
         json={
