@@ -1,5 +1,6 @@
 import FileUpload from "../components/FileUpload";
 import ChatBox from "../components/ChatBox";
+import SummaryPanel from "../components/SummaryPanel"
 
 // Home Page
 function Home() {
@@ -12,6 +13,10 @@ function Home() {
       <hr />
 
       <ChatBox />
+
+      <hr />
+
+      <SummaryPanel />
     </div>
   );
 }
