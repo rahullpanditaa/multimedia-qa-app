@@ -10,7 +10,7 @@ These timestamps enable:
 from sqlalchemy import Float, ForeignKey, Integer, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.base import Base
+from app.db.base_class import Base
 
 from pgvector.sqlalchemy import Vector
 
