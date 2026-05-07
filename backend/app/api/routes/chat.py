@@ -9,7 +9,7 @@ Flow:
 5. return grounded answer
 """
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -17,6 +17,8 @@ from app.db.session import get_db
 
 from app.services.retrieval_service import retrieve_similar_chunks
 from app.services.llm_service import generate_response
+
+from app.models.document import Document
 
 # /chat path operations
 router = APIRouter(prefix="/chat", tags=["chat"])
@@ -39,6 +41,14 @@ def chat(payload: ChatRequest, db: Session = Depends(get_db)):
     Main RAG chat endpoint.
     """
 
+    # validate doc exists
+    document = db.query(Document).filter(Document.id == payload.document_id).first()
+    if not document:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found."
+        )
+    
     # Retrieve relevant chunks
     retrieved_chunks = retrieve_similar_chunks(
         query=payload.question,

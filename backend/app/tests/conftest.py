@@ -20,17 +20,12 @@ from app.db.session import get_db
 
 # Test db 
 TEST_DATABASE_URL = (
-    "sqlite:///./test.db"
+    "postgresql://postgres:postgres@localhost:5433/qa_rag_test"
 )
-
 
 # SQLite engine for testing
 engine = create_engine(
-    TEST_DATABASE_URL,
-
-    connect_args={
-        "check_same_thread": False
-    },
+    TEST_DATABASE_URL
 )
 
 
