@@ -1,29 +1,54 @@
 import FileUpload from "../components/FileUpload";
 import ChatBox from "../components/ChatBox";
-import SummaryPanel from "../components/SummaryPanel"
+import SummaryPanel from "../components/SummaryPanel";
 import TimestampResults from "../components/TimestampResults";
 
-// Home Page
+
 function Home() {
+
   return (
-    <div>
-      <h1>Multimedia RAG Application</h1>
 
-      <FileUpload />
+    <div className="app-container">
 
-      <hr />
+      <h1 className="page-title">
+        Multimedia RAG Application
+      </h1>
 
-      <ChatBox />
 
-      <hr />
+      {/* Upload section */}
+      <div className="section-card">
 
-      <SummaryPanel />
+        <FileUpload />
 
-      <hr />
+      </div>
 
-      <TimestampResults />
+
+      {/* Chat section */}
+      <div className="section-card">
+
+        <ChatBox />
+
+      </div>
+
+
+      {/* Summary section */}
+      <div className="section-card">
+
+        <SummaryPanel />
+
+      </div>
+
+
+      {/* Timestamp section */}
+      <div className="section-card">
+
+        <TimestampResults />
+
+      </div>
+
     </div>
   );
 }
+
 
 export default Home;

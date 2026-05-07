@@ -117,7 +117,7 @@ function ChatBox() {
 
       {/* Render answer */}
       {answer && (
-        <div>
+        <div className="answer-box">
 
           <h3>Answer</h3>
 

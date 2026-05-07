@@ -149,14 +149,7 @@ function TimestampResults() {
 
               <div
                 key={index}
-                style={{
-                  border:
-                    "1px solid gray",
-
-                  padding: "10px",
-
-                  marginBottom: "10px",
-                }}
+                className="timestamp-card"
               >
 
                 {/* Timestamp range */}
