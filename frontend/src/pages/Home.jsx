@@ -1,6 +1,7 @@
 import FileUpload from "../components/FileUpload";
 import ChatBox from "../components/ChatBox";
 import SummaryPanel from "../components/SummaryPanel"
+import TimestampResults from "../components/TimestampResults";
 
 // Home Page
 function Home() {
@@ -17,6 +18,10 @@ function Home() {
       <hr />
 
       <SummaryPanel />
+
+      <hr />
+
+      <TimestampResults />
     </div>
   );
 }

@@ -8,6 +8,7 @@ class DocumentResponse(BaseModel):
     id: int
     filename: str
     file_type: str
+    filepath: str
     created_at: datetime
 
     class Config:
