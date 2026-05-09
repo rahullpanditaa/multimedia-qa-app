@@ -1,10 +1,29 @@
+import { useState } from "react";
+
 import FileUpload from "../components/FileUpload";
 import ChatBox from "../components/ChatBox";
 import SummaryPanel from "../components/SummaryPanel";
 import TimestampResults from "../components/TimestampResults";
 
+import LoginForm from "../components/LoginForm";
+import RegisterForm from "../components/RegisterForm";
 
 function Home() {
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
+
+  if (!isAuthenticated) {
+    return (
+      <div className="app-container">
+        <div className="section-card">
+          <RegisterForm />
+        </div>
+
+        <div className="section-card">
+          <LoginForm setIsAuthenticated={setIsAuthenticated}/>
+        </div>
+      </div>
+    );
+  }
 
   return (
 

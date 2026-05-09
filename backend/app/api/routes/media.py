@@ -52,6 +52,7 @@ def upload_media(file: UploadFile = File(...),
         filepath=filepath,
         mime_type=file.content_type,
         file_type="media",
+        user_id=current_user.id
     )
 
     db.add(document)

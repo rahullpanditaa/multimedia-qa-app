@@ -69,6 +69,8 @@ def upload_pdf(file: UploadFile = File(...), db: Session = Depends(get_db),
         filename=file.filename,
         filepath=filepath,
         mime_type=file.content_type,
+        file_type="pdf",
+        user_id=current_user.id
     )
 
     db.add(document)

@@ -1,6 +1,6 @@
 from app.db.base_class import Base
 from datetime import datetime
-from sqlalchemy import DateTime, Integer, String
+from sqlalchemy import DateTime, Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 # Table for uploaded docs
@@ -30,6 +30,8 @@ class Document(Base):
         DateTime,
         default=datetime.utcnow,
     )
+
+    user_id = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
 
     # Relationship - one doc can have many chunks
     chunks = relationship(
