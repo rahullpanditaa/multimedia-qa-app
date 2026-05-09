@@ -8,10 +8,11 @@ Text embedding model used- nomic-embed-text
 """
 
 import requests
+import os
 
 
 # Ollama embeddings endpoint
-OLLAMA_URL = "http://localhost:11434/api/embeddings"
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
 
 EMBEDDING_MODEL = "nomic-embed-text"
 
@@ -28,7 +29,7 @@ def generate_embedding(text: str) -> list[float]:
     """
 
     response = requests.post(
-        OLLAMA_URL,
+        f"{OLLAMA_URL}/api/embeddings",
         json={
             "model": EMBEDDING_MODEL,
             "prompt": text,
