@@ -22,6 +22,8 @@ from app.models.document import Document
 
 from fastapi.responses import StreamingResponse
 
+from app.core.config import settings
+
 import requests
 import json
 
@@ -135,7 +137,7 @@ Question:
 
         response = requests.post(
 
-            "http://localhost:11434/api/generate",
+            f"{settings.ollama_url}/api/generate",
 
             json={
 
