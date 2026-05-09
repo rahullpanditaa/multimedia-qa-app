@@ -1,271 +1,438 @@
-# Multimedia RAG Web Application
+# Multimedia QA Web Application
 
-AI-powered document and multimedia question-answering application built with FastAPI, React, PostgreSQL, pgvector, Ollama, and Whisper.
+An AI-powered full-stack application that allows users to upload PDF documents, audio, and video files, and interact with them through natural language.
 
 Users can:
-- Upload PDFs, audio, and video files
-- Ask questions about uploaded content
-- Generate summaries
-- Retrieve timestamps for specific topics in media
-- Play relevant media sections directly from semantic search results
+
+* Upload PDFs, MP3s, and videos
+* Ask questions about uploaded content using Retrieval-Augmented Generation (RAG)
+* Generate summaries
+* Extract topic-specific timestamps from audio/video
+* Play the relevant portion of media files
+* Register and log in with JWT-based authentication
 
 ---
 
-# Features
+## Features
 
-## Document Processing
-- PDF upload + text extraction
-- Automatic text chunking
-- Vector embeddings using local LLM embeddings
-- Semantic retrieval with pgvector
+### Document and Media Upload
+* Upload PDF documents
+* Upload audio files (e.g. MP3)
+* Upload video files
+* Automatic file type detection
 
-## Multimedia Processing
-- Audio/video upload
-- Whisper-based transcription
-- Timestamp extraction
-- Timestamp-based playback
+### AI-Powered Q&A
+* Ask questions about uploaded files
+* Semantic retrieval using vector embeddings and pgvector
+* LLM-generated answers
+* Streaming responses in the chat interface
 
-## AI Features
-- Retrieval-Augmented Generation (RAG)
-- Semantic search
-- AI summaries
-- Context-aware chatbot
+### Summarization
+* Generate concise summaries of uploaded documents and transcripts
+* Redis caching for faster repeated summary requests
 
-## Frontend
-- React + Vite UI
-- File upload interface
-- Chat interface
-- Summary generation UI
-- Timestamp search UI
-- Media playback UI
+### Timestamp Extraction
+* Identify where specific topics appear in audio/video transcripts
+* Display start and end timestamps
+* Show transcript snippets
 
-## Backend
-- FastAPI REST API
-- PostgreSQL + pgvector
-- SQLAlchemy ORM
-- Alembic migrations
+### Media Playback
+* Play the exact portion of audio/video associated with timestamp results
 
-## Infrastructure
-- Docker + Docker Compose
-- GitHub Actions CI/CD
-- Automated tests with 95% coverage
+### Authentication and Authorization
+* User registration and login
+* JWT-based authentication
+* Per-user document ownership and access control
 
----
-
-# Tech Stack
-
-## Backend
-- Python
-- FastAPI
-- SQLAlchemy
-- PostgreSQL
-- pgvector
-- Alembic
-
-## AI / ML
-- Ollama
-- Mistral
-- nomic-embed-text
-- Faster-Whisper
-
-## Frontend
-- React
-- Vite
-- Axios
-
-## DevOps
-- Docker
-- Docker Compose
-- GitHub Actions
-- Pytest
-
+### Infrastructure and DevOps
+* Dockerized backend and frontend
+* Docker Compose orchestration
+* PostgreSQL with pgvector
+* Redis for caching
+* GitHub Actions CI
+* Automated tests with 95%+ coverage
 
 ---
 
-# Project Structure
+## Architecture Overview
 
 ```text
-backend/
-├── app/
-│   ├── api/
-│   ├── models/
-│   ├── routes/
-│   ├── schemas/
-│   ├── services/
-│   └── tests/
-│
-├── alembic/
-│
-└── requirements.txt
-
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── api/
+React Frontend
+    |
+    v
+FastAPI Backend
+    |
+    +--> PostgreSQL + pgvector
+    |
+    +--> Redis
+    |
+    +--> Whisper / Speech-to-Text
+    |
+    +--> Embedding Model
+    |
+    +--> LLM (Ollama or API-based)
 ```
 
 ---
 
-# Setup Instructions
+## Tech Stack
 
-## 1. Clone Repository
+### Frontend
+* React
+* Vite
+* Axios
+
+### Backend
+* FastAPI
+* SQLAlchemy
+* Alembic
+* Pydantic
+
+### AI / ML
+* Sentence Transformers
+* Whisper (speech-to-text)
+* LLM via Ollama (default)
+
+### Data Stores
+* PostgreSQL
+* pgvector
+* Redis
+
+### DevOps
+* Docker
+* Docker Compose
+* GitHub Actions
+* pytest + pytest-cov
+
+---
+
+## Project Structure
+
+```text
+multimedia-qa-web-app/
+├── backend/
+│   ├── alembic/
+│   ├── app/
+│   │   ├── api/routes/
+│   │   ├── core/
+│   │   ├── db/
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   └── tests/
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── alembic.ini
+│
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   └── pages/
+│   └── Dockerfile
+│
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## Prerequisites
+* Docker
+* Docker Compose
+
+Optional for local development without Docker:
+
+* Python 3.12+
+* Node.js 20+
+* npm
+
+---
+
+## Quick Start (Recommended)
+
+From the repository root:
 
 ```bash
-git clone <your-repo-url>
-cd multimedia-qa-web-app
+docker compose up --build
 ```
+
+This starts:
+* Frontend
+* Backend
+* PostgreSQL
+* Redis
+
+### Application URLs
+
+| Service      | URL                                                      |
+| ------------ | -------------------------------------------------------- |
+| Frontend     | [http://localhost:5173](http://localhost:5173)           |
+| Backend API  | [http://localhost:8000](http://localhost:8000)           |
+| Swagger Docs | [http://localhost:8000/docs](http://localhost:8000/docs) |
 
 ---
 
-# 2. Start PostgreSQL
+## First-Time Setup
 
-```bash
-docker compose up -d
-```
+### 1. Register a User
+Open the frontend and create an account.
+
+### 2. Log In
+Log in with your credentials.
+
+### 3. Upload Files
+Upload a PDF, MP3, or video.
+
+### 4. Use the Application
+* Ask questions
+* Generate summaries
+* Find timestamps
+* Play relevant media segments
 
 ---
 
-# 3. Backend Setup
+## Local Development (Without Docker)
+
+### Backend
 
 ```bash
 cd backend
-
 python -m venv .venv
-
 source .venv/bin/activate
+pip install -r requirements.txt
+alembic upgrade head
+uvicorn app.main:app --reload
 ```
 
-Install dependencies:
+### Frontend
 
 ```bash
-pip install -r requirements.txt
+cd frontend
+npm install
+npm run dev
 ```
 
 ---
 
-# 4. Configure Environment Variables
+## Environment Variables
 
-Create:
-
-```text
-backend/.env
-```
-
-Example:
+### Backend `.env`
 
 ```env
-DATABASE_URL=postgresql://postgres:postgres@localhost:5433/rag_app
+DATABASE_URL=postgresql://postgres:postgres@localhost:5433/qa_rag_app
+REDIS_URL=redis://localhost:6379/0
+LLM_PROVIDER=ollama
+SECRET_KEY=change-this-in-production
 ```
 
 ---
 
-# 5. Run Database Migrations
+## Database Migrations
+
+Run from the `backend/` directory:
 
 ```bash
+alembic revision --autogenerate -m "description"
 alembic upgrade head
 ```
 
 ---
 
-# 6. Start Backend
+## Running Tests
+
+From `backend/`:
 
 ```bash
-uvicorn app.main:app --reload
+pytest --cov=app --cov-report=term-missing
 ```
 
-Backend runs at:
+Target coverage:
 
 ```text
-http://127.0.0.1:8000
+95%+
 ```
 
 ---
 
-# 7. Frontend Setup
+## CI/CD
 
-```bash
-cd frontend
+GitHub Actions automatically:
 
-npm install
-```
+* Installs dependencies
+* Starts PostgreSQL
+* Enables pgvector
+* Runs Alembic migrations
+* Executes tests with coverage
 
-Start frontend:
-
-```bash
-npm run dev
-```
-
-Frontend runs at:
+Workflow file:
 
 ```text
-http://localhost:5173
+.github/workflows/ci.yml
 ```
 
 ---
 
-# Running Tests
+## API Endpoints
 
-Run all tests:
+### Authentication
 
-```bash
-pytest
-```
+| Method | Endpoint         | Description         |
+| ------ | ---------------- | ------------------- |
+| POST   | `/auth/register` | Register a new user |
+| POST   | `/auth/login`    | Obtain JWT token    |
 
-Run coverage:
+### Documents
 
-```bash
-pytest --cov=app
-```
+| Method | Endpoint      | Description                   |
+| ------ | ------------- | ----------------------------- |
+| GET    | `/documents/` | List current user's documents |
 
-Current coverage:
+### Upload
+
+| Method | Endpoint        | Description        |
+| ------ | --------------- | ------------------ |
+| POST   | `/upload/`      | Upload PDF         |
+| POST   | `/media/upload` | Upload audio/video |
+
+### AI Features
+
+| Method | Endpoint                 | Description        |
+| ------ | ------------------------ | ------------------ |
+| POST   | `/chat/`                 | Ask a question     |
+| POST   | `/chat/stream`           | Streaming chat     |
+| GET    | `/summary/{document_id}` | Generate summary   |
+| POST   | `/timestamps/`           | Extract timestamps |
+
+---
+
+## Retrieval-Augmented Generation (RAG) Pipeline
+
+### PDF Workflow
+
+1. Upload PDF
+2. Extract text
+3. Chunk text
+4. Generate embeddings
+5. Store vectors in PostgreSQL
+6. Retrieve relevant chunks
+7. Generate answer with LLM
+
+### Audio/Video Workflow
+
+1. Upload media
+2. Transcribe with Whisper
+3. Store transcript segments with timestamps
+4. Search transcript for relevant windows
+5. Return timestamps and snippets
+
+---
+
+## Caching with Redis
+
+Document summaries are cached in Redis.
+
+### Cache Key Format
 
 ```text
-95%
+summary:<document_id>
 ```
+
+### Benefits
+
+* Faster repeated summary requests
+* Reduced LLM calls
+* Lower computational cost
 
 ---
 
-# API Endpoints
+## Security
 
-## Upload PDF
-
-```http
-POST /upload/pdf
-```
-
-## Upload Media
-
-```http
-POST /media/upload
-```
-
-## Chat
-
-```http
-POST /chat/
-```
-
-## Generate Summary
-
-```http
-POST /summary/{document_id}
-```
-
-## Timestamp Search
-
-```http
-POST /timestamps/
-```
+* Passwords hashed using bcrypt
+* JWT authentication
+* Protected API endpoints
+* Per-user document ownership
 
 ---
 
-# Example Workflow
+## Docker Services
 
-1. Upload PDF/audio/video
-2. Generate embeddings/transcripts
-3. Ask questions
-4. Retrieve semantic answers
-5. Generate summaries
-6. Search timestamps
-7. Play relevant media section 
+Defined in `docker-compose.yml`:
+
+* `frontend`
+* `backend`
+* `postgres`
+* `redis`
+
+---
+
+<!-- ## Demo Walkthrough
+
+A walkthrough video demonstrating:
+
+* Registration and login
+* File upload
+* Chat
+* Summaries
+* Timestamp extraction
+* Media playback
+* Code overview
+
+**Demo Video:** Add your YouTube or Google Drive link here. -->
+
+---
+
+<!-- ## Optional Deployment
+
+Suggested deployment stack:
+
+* Frontend: Vercel
+* Backend: Render
+* Database: Neon or Render PostgreSQL
+* Redis: Upstash or Render Redis
+
+---
+
+## Future Improvements
+
+* Redis-based rate limiting
+* Cloud deployment
+* OAuth login
+* Document deletion
+* Background job processing
+* Responsive mobile UI
+
+--- -->
+
+## Sample Use Cases
+
+### PDF Q&A
+
+Upload a research paper and ask:
+
+* "What is the main conclusion?"
+* "Summarize section 3."
+
+### Audio Timestamp Search
+
+Upload a podcast and ask:
+
+* "Where do they discuss machine learning?"
+
+### Video Analysis
+
+Upload a lecture and ask:
+
+* "When does the instructor explain backpropagation?"
+
+<!-- ---
+
+## Author
+
+Rahul Pandita
+
+---
+
+## License
+
+This project was developed as part of an SDE-1 programming assignment. -->
