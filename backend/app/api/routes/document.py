@@ -3,6 +3,7 @@ from app.models.document import Document
 from app.schemas.document import DocumentCreate, DocumentResponse
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from app.services.auth_dependency import get_current_user
 
 # group together /documents path operations
 router = APIRouter(prefix="/documents", tags=["documents"])
@@ -18,17 +19,5 @@ def create_document(payload: DocumentCreate, db: Session = Depends(get_db)):
     return document
 
 @router.get("/", response_model=list[DocumentResponse])
-def get_documents(db: Session = Depends(get_db)):
-    """
-    Return all uploaded documents.
-    """
-
-    documents = (
-        db.query(Document)
-
-        .order_by(Document.id.desc())
-
-        .all()
-    )
-
-    return documents
+def get_documents(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    return (db.query(Document).filter(Document.user_id == current_user.id).all())
