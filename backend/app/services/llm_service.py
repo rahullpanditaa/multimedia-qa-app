@@ -12,37 +12,22 @@ This layer abstracts the model provider.
 
 import requests
 
-
-# Ollama chat endpoint
-OLLAMA_CHAT_URL = "http://localhost:11434/api/generate"
-
-# LLM_MODEL = "mistral:latest"
-LLM_MODEL = "phi3:mini"
-
+from app.core.config import settings
 
 def generate_response(prompt: str) -> str:
     """
-    Generate response from local LLM.
-
-    Args:
-        prompt:
-            Fully constructed RAG prompt
-
-    Returns:
-        Generated response text
+    Send prompt to Ollama and return the generated response.
     """
 
     response = requests.post(
-        OLLAMA_CHAT_URL,
+        f"{settings.ollama_url}/api/generate",
         json={
-            "model": LLM_MODEL,
+            "model": "phi3:mini",
             "prompt": prompt,
             "stream": False,
         },
     )
 
     response.raise_for_status()
-
     data = response.json()
-
     return data["response"]
