@@ -1,54 +1,40 @@
 services:
   postgres:
-
     image: pgvector/pgvector:pg16
-
     container_name: qa_rag_postgres
-
     environment:
-
       POSTGRES_USER: postgres
-
       POSTGRES_PASSWORD: postgres
-
       POSTGRES_DB: qa_rag_app
-
     ports:
       - "5433:5432"
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:7
+    container_name: qa_rag_redis
+    ports:
+      - "6379:6379"   
+  
   backend:
-
     build: ./backend
-
     container_name: qa_rag_backend
-
     depends_on:
-
       - postgres
+      - redis
 
     environment:
-
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/qa_rag_app
-
     ports:
-
       - "8000:8000"
-
     volumes:
-
       - ./backend:/app
 
   frontend:
-
     build: ./frontend
-
     container_name: qa_rag_frontend
-
     depends_on:
-
       - backend
 
     ports:

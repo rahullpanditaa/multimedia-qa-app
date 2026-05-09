@@ -268,4 +268,4 @@ POST /timestamps/
 4. Retrieve semantic answers
 5. Generate summaries
 6. Search timestamps
-7. Play relevant media section
+7. Play relevant media section 
