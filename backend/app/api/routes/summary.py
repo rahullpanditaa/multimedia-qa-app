@@ -19,6 +19,8 @@ from app.models.chunk import Chunk
 from app.services.llm_service import generate_response
 
 from app.services.auth_dependency import get_current_user
+from app.services.redis_service import redis_client
+
 
 # api router for /summary path operations
 router = APIRouter(prefix="/summary", tags=["summary"])
@@ -43,6 +45,15 @@ def summarize_document(document_id: int, db: Session = Depends(get_db),
             status_code=404,
             detail="Document not found",
         )
+    
+    # Check cache for doc summary
+    cache_key = f"summary:{document_id}"
+    cached_summary = redis_client.get(cache_key)
+    if cached_summary:
+        return {
+            "document_id": document_id,
+            "filename": document.filename,
+            "summary": cached_summary}
 
     # Retrieve document chunks
     chunks = (
@@ -72,6 +83,9 @@ Summary:
 """
 
     summary = generate_response(prompt)
+
+    # store summary in redis for 24 hrs
+    redis_client.setex(cache_key, 86400, summary)
 
     return {
         "document_id": document_id,
