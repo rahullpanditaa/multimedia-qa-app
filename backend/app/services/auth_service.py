@@ -9,9 +9,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 # hash pswd
-pwd_context = CryptContext(
-    schemes=["bcrypt"], deprecated="auto",
-)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password):
     return pwd_context.hash(password)
@@ -32,12 +30,6 @@ def create_access_token(data):
         )
     )
 
-    payload.update(
-        {"exp": expire}
-    )
+    payload.update({"exp": expire})
 
-    return jwt.encode(
-        payload,
-        SECRET_KEY,
-        algorithm=ALGORITHM
-    )
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)

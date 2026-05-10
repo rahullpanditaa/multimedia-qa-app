@@ -18,6 +18,7 @@ def test_summary_valid_document(client, db_session):
         filepath="uploads/test.pdf",
         mime_type="application/pdf",
         file_type="pdf",
+        user_id=1
     )
 
     db_session.add(document)

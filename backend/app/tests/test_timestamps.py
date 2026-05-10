@@ -25,7 +25,8 @@ def test_timestamp_retrieval(client, db_session):
         filename="song.mp3",
         filepath="uploads/song.mp3",
         mime_type="audio/mpeg",
-        file_type="media"        
+        file_type="media",
+        user_id=1        
     )
 
     db_session.add(document)

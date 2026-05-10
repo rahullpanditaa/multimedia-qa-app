@@ -2,10 +2,12 @@
 Shared pytest fixtures.
 
 This file configures:
-- test database
-- FastAPI test client
-- dependency overrides
+1. test database
+2. FastAPI test client
+3. dependency overrides
+4. authenticated test client
 """
+
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -17,16 +19,14 @@ from app.main import app
 from app.db.base import Base
 from app.db.session import get_db
 
-# Test db 
-TEST_DATABASE_URL = (
-    "postgresql://postgres:postgres@localhost:5433/qa_rag_test"
-)
+from app.models.user import User
+from app.services.auth_service import hash_password
 
-# SQLite engine for testing
-engine = create_engine(
-    TEST_DATABASE_URL
-)
+# Test database
+TEST_DATABASE_URL = "postgresql://postgres:postgres@localhost:5433/qa_rag_test"
 
+# Engine
+engine = create_engine(TEST_DATABASE_URL)
 
 # Session factory
 TestingSessionLocal = sessionmaker(
@@ -35,36 +35,73 @@ TestingSessionLocal = sessionmaker(
     bind=engine,
 )
 
-# create test tables
-Base.metadata.create_all(
-    bind=engine
-)
-
-
+# Create all tables
+Base.metadata.create_all(bind=engine)
 
 def override_get_db():
-
     db = TestingSessionLocal()
 
     try:
         yield db
-
     finally:
         db.close()
+
+app.dependency_overrides[get_db] = override_get_db
 
 @pytest.fixture
 def db_session():
+    """
+    Provide a clean database session for each test.
+    """
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+
     db = TestingSessionLocal()
+
     try:
         yield db
     finally:
         db.close()
 
-# Replace real DB dependency
-app.dependency_overrides[get_db] = (
-    override_get_db
-)
 
 @pytest.fixture
-def client():
-    return TestClient(app)
+def client(db_session):
+    """
+    Authenticated FastAPI test client.
+
+    Creates a test user, logs in, and attaches the JWT token
+    to all subsequent requests.
+    """
+
+    # Create test user
+    user = User(
+        username="testuser",
+        password_hash=hash_password("testpassword")
+    )
+
+    db_session.add(user)
+    db_session.commit()
+
+    # Create client
+    test_client = TestClient(app)
+
+    # Log in
+    response = test_client.post(
+        "/auth/login",
+        data={
+            "username": "testuser",
+            "password": "testpassword",
+        },
+    )
+
+    token = response.json()["access_token"]
+
+    # Attach token to all future requests
+    test_client.headers.update(
+        {
+            "Authorization":
+                f"Bearer {token}"
+        }
+    )
+
+    return test_client

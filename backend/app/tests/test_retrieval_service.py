@@ -19,7 +19,8 @@ def test_chunk_retrieval(db_session):
         filename="test.pdf",
         filepath="uploads/test.pdf",
         mime_type="application/pdf",
-        file_type="pdf"        
+        file_type="pdf",
+        user_id=1        
     )
 
     db_session.add(document)
