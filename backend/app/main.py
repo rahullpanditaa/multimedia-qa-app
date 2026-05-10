@@ -11,7 +11,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi.staticfiles import StaticFiles
 
+from pathlib import Path
+
 app = FastAPI()
+
+Path("uploads").mkdir(parents=True, exist_ok=True)
 
 # static file serving - uploaded media files can be accessed via url 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
