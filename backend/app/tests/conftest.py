@@ -22,8 +22,12 @@ from app.db.session import get_db
 from app.models.user import User
 from app.services.auth_service import hash_password
 
-# Test database
-TEST_DATABASE_URL = "postgresql://postgres:postgres@localhost:5433/qa_rag_test"
+import os
+
+TEST_DATABASE_URL = os.getenv(
+    "TEST_DATABASE_URL",
+    "postgresql://postgres:postgres@localhost:5432/qa_rag_test",
+)
 
 # Engine
 engine = create_engine(TEST_DATABASE_URL)
