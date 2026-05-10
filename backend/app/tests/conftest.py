@@ -21,6 +21,7 @@ from app.db.session import get_db
 
 from app.models.user import User
 from app.services.auth_service import hash_password
+from unittest.mock import patch, Mock
 
 import os
 
@@ -111,3 +112,23 @@ def client(db_session):
     )
 
     return test_client
+
+
+@pytest.fixture(autouse=True)
+def mock_external_services():
+    """
+    Mock Ollama and Redis for all tests.
+    """
+
+    # Mock embedding service
+    with patch(
+        "app.services.embedding_service.generate_embedding",
+        return_value=[0.1] * 768,
+    ), patch(
+        "app.api.routes.summary.redis_client"
+    ) as mock_redis:
+
+        # Redis cache miss by default
+        mock_redis.get.return_value = None
+
+        yield
