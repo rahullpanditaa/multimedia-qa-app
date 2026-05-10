@@ -247,10 +247,10 @@ From `backend/`:
 pytest --cov=app --cov-report=term-missing
 ```
 
-Target coverage:
+Coverage:
 
 ```text
-95%+
+95%
 ```
 
 ---
@@ -365,8 +365,3 @@ Defined in `docker-compose.yml`:
 * `redis`
 
 ---
-
-<!-- ## Demo Walkthrough
-
----
-
