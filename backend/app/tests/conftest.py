@@ -117,18 +117,34 @@ def client(db_session):
 @pytest.fixture(autouse=True)
 def mock_external_services():
     """
-    Mock Ollama and Redis for all tests.
+    Mock all external HTTP calls to Ollama and Redis.
     """
 
-    # Mock embedding service
+    def fake_post(*args, **kwargs):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+
+        url = args[0] if args else ""
+
+        # Embeddings endpoint
+        if "/api/embeddings" in url:
+            mock_response.json.return_value = {"embedding": [0.1] * 768}
+        # Text generation endpoint
+        elif "/api/generate" in url:
+            mock_response.json.return_value = {"response": "Mocked response"}
+        else:
+            mock_response.json.return_value = {}
+
+        return mock_response
+
     with patch(
-        "app.services.embedding_service.generate_embedding",
-        return_value=[0.1] * 768,
+        "requests.post",
+        side_effect=fake_post,
     ), patch(
         "app.api.routes.summary.redis_client"
     ) as mock_redis:
 
-        # Redis cache miss by default
+        # Simulate cache miss by default
         mock_redis.get.return_value = None
 
         yield
