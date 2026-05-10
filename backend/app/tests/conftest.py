@@ -76,7 +76,7 @@ def client(db_session):
     # Create test user
     user = User(
         username="testuser",
-        password_hash=hash_password("testpassword")
+        hashed_password=hash_password("testpassword")
     )
 
     db_session.add(user)
