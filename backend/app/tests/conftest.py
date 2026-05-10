@@ -88,11 +88,13 @@ def client(db_session):
     # Log in
     response = test_client.post(
         "/auth/login",
-        data={
+        json={
             "username": "testuser",
             "password": "testpassword",
         },
     )
+
+    assert response.status_code == 200, response.text
 
     token = response.json()["access_token"]
 
